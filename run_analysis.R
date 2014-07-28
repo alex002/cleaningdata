@@ -46,8 +46,11 @@ test=cbind(ssub,sidx,sdata)
 ## Merge test and train data
 data=rbind(train,test)
 
-## Create a new parameter for sorting
+## Create a new parameter to calculate group mean
 data$o=data$Activity+10*data$Subject
+
+
+## Compute mean for each column based on the index
 ndata=matrix(nrow=180,ncol=ncol(data))
 ndata=data.frame(ndata)
 for(i in 1:ncol(data)){
@@ -64,6 +67,7 @@ fdata=merge(ndata,dact,by.x='Activity',by.y='V1',all.x=T,sort=F)
 
 fdata=fdata[order(fdata$o),]
 fdata$o=NULL
+rownames(fdata)=NULL;
 
 ## Output data
 write.table(fdata,file='result.txt',col.names=T)
