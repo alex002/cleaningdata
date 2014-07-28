@@ -60,14 +60,10 @@ colnames(ndata)=colnames(data)
 
 ## Descriptive activity
 dact=read.table('./activity_labels.txt',sep='')
-colnames(dact)[2]='Descriptive.Activity'
 
-## Merge descriptive activity with the test data
-fdata=merge(ndata,dact,by.x='Activity',by.y='V1',all.x=T,sort=F)
-
-fdata=fdata[order(fdata$o),]
-fdata$o=NULL
-rownames(fdata)=NULL;
+## Substitute the activity with descriptive words
+ndata$Activity=factor(ndata$Activity,
+                      levels=dact$V1,labels=dact$V2)
 
 ## Output data
 write.table(fdata,file='result.txt',col.names=T)
