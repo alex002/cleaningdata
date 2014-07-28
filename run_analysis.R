@@ -46,13 +46,24 @@ test=cbind(ssub,sidx,sdata)
 ## Merge test and train data
 data=rbind(train,test)
 
+## Create a new parameter for sorting
+data$o=data$Activity+10*data$Subject
+ndata=matrix(nrow=180,ncol=ncol(data))
+ndata=data.frame(ndata)
+for(i in 1:ncol(data)){
+      ndata[,i]=tapply(data[,i],data$o,mean)
+}
+colnames(ndata)=colnames(data)
 
 ## Descriptive activity
 dact=read.table('./activity_labels.txt',sep='')
 colnames(dact)[2]='Descriptive.Activity'
 
 ## Merge descriptive activity with the test data
-fdata=merge(data,dact,by.x='Activity',by.y='V1',all.x=T,sort=F)
+fdata=merge(ndata,dact,by.x='Activity',by.y='V1',all.x=T,sort=F)
+
+fdata=fdata[order(fdata$o),]
+fdata$o=NULL
 
 ## Output data
 write.table(fdata,file='result.txt',col.names=T)
